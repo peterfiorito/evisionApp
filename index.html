@@ -1,30 +1,31 @@
 <!doctype html>
 <html>
   <head>
+    <!-- Included Jquery for bootstrap -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <title>Evision Banking App</title>
+    <title>eVision Balance App</title>
+    <!-- Included Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    
+    <!-- Added Roboto Font -->
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-
+    <!-- Added stylesheet -->
     <link rel="stylesheet" href="main.css">
     <link rel="icon" type="image/png" href="favicon.png" /> 
-
-
     <!-- Include the AngularJS library -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>   
 
   </head>
   <body>
     <div class="container-fluid content">
-      <div ng-app="myApp" ng-controller="HttpPutController" class="container">
+      <!-- Main App -->
+      <div ng-app="myApp" ng-controller="BalanceLogController" class="container">
           
           <div class="row">
-            <h2>Evision Transaccion Logs</h2>
+            <h2>eVision Balance Logs</h2>
           </div>
           <div class="row mb-1">
+            <!-- displays account data -->
             <div>{{account.name}}</div>
             <div>{{account.iban}}</div>
             <div>{{account.balance}}</div>
@@ -54,6 +55,7 @@
           <div class="row margin-auto">
             <table class="mt-1 transact-style">
               <tbody>
+                <!-- Angular loops through the transactions in json -->
                 <tr ng-repeat="item in transactions" class="ng-binding ng-scope">
                   <td>{{item.amount}}</td>
                   <td>{{item.from}}</td>
@@ -67,14 +69,15 @@
       </div>
     </div>
   </body>
-
+<!-- App Controller -->
   <script>
     var myApp = angular.module("myApp", []);
-    myApp.controller("HttpPutController", function ($scope, $http) {
+    myApp.controller("BalanceLogController", function ($scope, $http) {
 
         $scope.items = [];
         $scope.transactions=[];
 
+        //get the data
           $scope.getData = function(){
             $http({
             method : "GET",
@@ -89,6 +92,7 @@
             });
           };
 
+        //on submit it runs UpdateData function and generates the data object with formatted values
         $scope.UpdateData = function () {
             var data = {
                 amount: parseInt($scope.amount),
@@ -98,7 +102,7 @@
                 date: new Date($scope.date)
             };
 
-
+        //send the put request with the correctly formatted data object. I added some messages in case I wanted to display the fail or success in the UI
         $http.put('http://localhost:8080/api/balance/add', (data)).then(function (response) {
           if (response.data) {$scope.msg = "Put Data Method Executed Successfully!";}
           $scope.transactions.push(data);
